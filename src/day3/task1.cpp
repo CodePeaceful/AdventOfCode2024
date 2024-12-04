@@ -13,7 +13,7 @@ int main() {
 int solve(std::vector<std::string> data) {
     std::regex pattern("mul\\([0-9]{1,3},[0-9]{1,3}\\)");
     int sum = 0;
-    for (auto line : data) {
+    for (auto& line : data) {
         auto matches = match(line, pattern);
         for (auto mul : matches) {
             auto step1 = split(mul, '(');

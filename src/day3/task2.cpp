@@ -41,7 +41,7 @@ std::vector<std::string> getDos(const std::vector<std::string>& data) {
     std::string doit = "do()";
     std::string dont = "don't()";
     std::vector<std::string> dos;
-    for (auto line : data) {
+    for (auto& line : data) {
         auto pos = 0ull;
         while (pos < line.size()) {
             if (Do) {
