@@ -1,9 +1,10 @@
+#pragma once
 #include <vector>
 #include <string>
 #include <sstream>
 #include <fstream>
 
-std::vector<std::string> split(std::string line, char seperator) {
+std::vector<std::string> split(const std::string& line, char seperator) {
     std::vector<std::string> splitString;
     std::string stringPart;
     std::stringstream input(line);
