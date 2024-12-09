@@ -30,11 +30,11 @@ int solve(std::vector<std::string> data) {
                 antinodes.insert(vec[i]);
             for (int j = i + 1; j < vec.size(); j++) {
                 Vec2d difference = vec[i].dif(vec[j]);
-                difference.setSmalestCommon(); //not needed be task design
+                difference.setSmalestCommon(); //not needed by task design
                 Vec2d anti1 = vec[i].add(difference);
                 Vec2d anti2 = vec[j].subtract(difference);
                 Vec2d anti3 = vec[i].subtract(difference);
-                while (anti3 != vec[j]) { //not needed be task design
+                while (anti3 != vec[j]) { //not needed by task design
                     antinodes.insert(anti3);
                     anti3 = anti3.subtract(difference);
                 }
