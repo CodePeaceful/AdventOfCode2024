@@ -17,15 +17,27 @@ private:
                     ++i;
                     line.push_back(xsame[i]);
                 }
-                if (std::any_of(line.begin(), line.end(), [this] (std::pair<int, int> pair) {
-                    std::pair<int, int> maybe { pair.first + 1, pair.second };
-                    return this->contains(maybe);})) {
-                    ++sum;
+                bool prev = false;
+                for (const auto& p : line) {
+                    std::pair<int, int> maybe { p.first + 1, p.second };
+                    if (!prev && _cells.contains(maybe)) {
+                        ++sum;
+                        prev = true;
+                    }
+                    else if (!_cells.contains(maybe)) {
+                        prev = false;
+                    }
                 }
-                if (std::any_of(line.begin(), line.end(), [this] (std::pair<int, int> pair) {
-                    std::pair<int, int> maybe { pair.first - 1, pair.second };
-                    return this->contains(maybe);})) {
-                    ++sum;
+                prev = false;
+                for (const auto& p : line) {
+                    std::pair<int, int> maybe { p.first - 1, p.second };
+                    if (!prev && _cells.contains(maybe)) {
+                        ++sum;
+                        prev = true;
+                    }
+                    else if (!_cells.contains(maybe)) {
+                        prev = false;
+                    }
                 }
             }
         }
@@ -42,15 +54,27 @@ private:
                     ++i;
                     line.push_back(ysame[i]);
                 }
-                if (std::any_of(line.begin(), line.end(), [this] (std::pair<int, int> pair) {
-                    std::pair<int, int> maybe { pair.first, pair.second - 1 };
-                    return this->contains(maybe);})) {
-                    ++sum;
+                bool prev = false;
+                for (const auto& p : line) {
+                    std::pair<int, int> maybe { p.first, p.second + 1 };
+                    if (!prev && _cells.contains(maybe)) {
+                        ++sum;
+                        prev = true;
+                    }
+                    else if (!_cells.contains(maybe)) {
+                        prev = false;
+                    }
                 }
-                if (std::any_of(line.begin(), line.end(), [this] (std::pair<int, int> pair) {
-                    std::pair<int, int> maybe { pair.first, pair.second + 1 };
-                    return this->contains(maybe);})) {
-                    ++sum;
+                prev = false;
+                for (const auto& p : line) {
+                    std::pair<int, int> maybe { p.first, p.second - 1 };
+                    if (!prev && _cells.contains(maybe)) {
+                        ++sum;
+                        prev = true;
+                    }
+                    else if (!_cells.contains(maybe)) {
+                        prev = false;
+                    }
                 }
             }
         }
@@ -59,10 +83,6 @@ private:
 public:
     Field(char type, int x, int y) : _type { type } {
         _cells.insert({ x, y });
-    }
-
-    bool contains(std::pair<int, int> pair) const {
-        return _cells.contains(pair);
     }
 
     bool isSame(char type) const {
@@ -120,7 +140,7 @@ public:
             }
         }
         std::vector<std::vector<std::pair<int, int>>> xsames;
-        std::vector<std::vector<std::pair<int, int>>> ysames;
+        //std::vector<std::vector<std::pair<int, int>>> ysames;
         for (const auto& p : justOutside) {
             for (int i = 0; ; ++i) {
                 if (i == xsames.size()) {
@@ -133,7 +153,7 @@ public:
                     break;
                 }
             }
-            for (int i = 0; ; ++i) {
+            /*for (int i = 0; ; ++i) {
                 if (i == ysames.size()) {
                     ysames.emplace_back();
                     ysames.back().emplace_back(p);
@@ -143,18 +163,18 @@ public:
                     ysames[i].push_back(p);
                     break;
                 }
-            }
+            }*/
         }
         for (auto& xsame : xsames) {
             std::sort(xsame.begin(), xsame.end());
         }
-        for (auto& ysame : ysames) {
+        /*for (auto& ysame : ysames) {
             std::sort(ysame.begin(), ysame.end());
-        }
+        }*/
         int sum = scanx(xsames) * 2;
-        int altsum = 2 * scany(ysames);
+        /*int altsum = 2 * scany(ysames);
         if (sum < altsum)
-            sum = altsum;
+            sum = altsum;*/
         return sum * _cells.size();
     }
 };
