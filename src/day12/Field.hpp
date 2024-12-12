@@ -151,7 +151,10 @@ public:
         for (auto& ysame : ysames) {
             std::sort(ysame.begin(), ysame.end());
         }
-        const int sum = scanx(xsames) + scany(ysames);
+        int sum = scanx(xsames) * 2;
+        int altsum = 2 * scany(ysames);
+        if (sum < altsum)
+            sum = altsum;
         return sum * _cells.size();
     }
 };
