@@ -4,43 +4,60 @@
 #include "CPU.hpp"
 #include "..\utility.hpp"
 
-int solve(std::vector<std::string>);
+long long solve(std::vector<std::string>);
 
 int main() {
     std::cout << solve(load()) << '\n';
 }
 
-int solve(std::vector<std::string> data) {
 
+long long solve(std::vector<std::string> data) {
     auto B = std::stoi(split(data[1], ' ').back());
     auto C = std::stoi(split(data[2], ' ').back());
     std::vector<int> pr = split(split(data[4], ' ').back(), ',') | std::views::transform([] (std::string s) {return std::stoi(s);}) | std::ranges::to<std::vector<int>>();
-    long long A = std::pow(3, pr.size());
-    while (true) {
-        CPU cpu(A, B, C, pr);
-
-        while (cpu.step()) {}
-
-        auto n = cpu.getOut();
-        if (n.size() < pr.size()) {
-            A *= 2;
-            std::cout << "more\n";
+    std::vector<long long> As { 1, 2, 3, 4, 5, 6, 7 };
+    for (int i = 0; i < pr.size();++i) {
+        std::vector<long long> newAs;
+        for (auto A : As) {
+            CPU cpu(A, B, C, pr);
+            while (cpu.step()) {}
+            auto& cupO = cpu.getOut();
+            if (cupO == pr) {
+                for (const auto& i : cpu.getOut()) {
+                    std::cout << i << ',';
+                }
+                std::cout << '\n';
+                return A;
+            }
+            if (cupO.size() != i + 1) {
+                throw std::exception();
+            }
+            auto prIt = pr.crbegin();
+            auto cpuIt = cupO.crbegin();
+            bool todo = true;
+            for (int j = 0; j <= i; ++j) {
+                if (*prIt != *cpuIt) {
+                    todo = false;
+                    break;
+                }
+                ++prIt;
+                ++cpuIt;
+            }
+            if (todo && i < pr.size() - 1) {
+                long long newA = 8 * A;
+                newAs.push_back(newA);
+                newAs.push_back(newA + 1);
+                newAs.push_back(newA + 2);
+                newAs.push_back(newA + 3);
+                newAs.push_back(newA + 4);
+                newAs.push_back(newA + 5);
+                newAs.push_back(newA + 6);
+                newAs.push_back(newA + 7);
+            }
         }
-        else {
-            A /= 2;
-            break;
+        if (i < pr.size() - 1) {
+            std::swap(As, newAs);
         }
     }
-    while (true) {
-        CPU cpu(A, B, C, pr);
-        while (cpu.step2()) {}
-        if (cpu.getOut() == pr) {
-            return A;
-        }
-        else ++A;
-    }
-
-
-
     return 0;
 }

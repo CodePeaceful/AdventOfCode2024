@@ -70,48 +70,7 @@ public:
         counter += 2;
         return true;
     }
-    bool step2() {
-        if (counter >= programm.size()) {
-            return false;
-        }
-        int num = getCombo() % 8;
-        switch (programm[counter]) {
-        case 0:
-            A /= (long long)std::pow(2, getCombo());
-            break;
-        case 1:
-            B = B ^ programm[counter + 1];
-            break;
-        case 2:
-            B = num;
-            break;
-        case 3:
-            if (A == 0) {
-                break;
-            }
-            counter = programm[counter + 1];
-            return true;
-        case 4:
-            B = B ^ C;
-            break;
-        case 5:
-            if (num != programm[out.size()]) {
-                return false;
-            }
-            out.push_back(num);
-            break;
-        case 6:
-            B = A / (long long)std::pow(2, getCombo());
-            break;
-        case 7:
-            C = A / (long long)std::pow(2, getCombo());
-            break;
-        default:
-            throw std::exception();
-        }
-        counter += 2;
-        return true;
-    }
+
     const std::vector<int>& getOut() {
         return out;
     }
