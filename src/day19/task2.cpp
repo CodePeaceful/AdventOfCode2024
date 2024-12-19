@@ -14,7 +14,7 @@ int main() {
 }
 
 long long solve(std::vector<std::string> data) {
-    auto types = split(data[0], ',') |
+    auto types = split(data.front(), ',') |
         std::views::transform([] (std::string s) {ltrim(s); return s;}) |
         std::ranges::to<std::vector<std::string>>();
 
