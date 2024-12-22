@@ -3,15 +3,15 @@
 
 #include "..\utility.hpp"
 
-int solve(std::vector<std::string>);
+long long solve(std::vector<std::string>);
 std::string stepOneStep(std::string outPart, std::string input, char pos);
 std::string stepTwoStep(std::string outPart, std::string input, char pos);
 std::string stepOneSolve(const std::string& out);
 std::string stepTwoSolve(const std::string& out);
 std::vector<std::string> getParts(std::string s);
 
-std::vector<std::pair<int, int>> keypadOne { { 'A', '1' }, { 'A', '4' }, { 'A', '7' }, { '0', '1' }, { '0', '4' }, { '0', '7' } };
-std::vector<std::pair<int, int>> controlerOne { { '^', '<' }, { 'A', '<' } };
+std::vector<std::pair<char, char>> keypadOne { { 'A', '1' }, { 'A', '4' }, { 'A', '7' }, { '0', '1' }, { '0', '4' }, { '0', '7' } };
+std::vector<std::pair<char, char>> controlerOne { { '^', '<' }, { 'A', '<' } };
 std::vector<std::string> controlerPaths { "A", "<<vA", ">>^A", "<A", ">A", "vA", "^A", "<vA", ">^A", ">vA", "<^A" };
 
 std::map<char, std::pair<int, int>> keypad {
@@ -40,9 +40,19 @@ int main() {
     std::cout << solve(load()) << '\n';
 }
 
-int solve(std::vector<std::string> data) {
+long long solve(std::vector<std::string> data) {
     const int padBots = 25;
-    int result = 0;
+    long long result = 0;
+    std::map<std::string, std::string> four;
+    for (auto part : controlerPaths) {
+        auto bot = part;
+        for (int i = 0; i < 4; ++i) {
+            bot = stepTwoSolve(bot);
+        }
+        four[part] = bot;
+        long long total = 0;
+        std::cout << bot.size() << '\n';
+    }
     std::map<std::string, std::string> five;
     for (auto part : controlerPaths) {
         auto bot = part;
@@ -53,31 +63,29 @@ int solve(std::vector<std::string> data) {
         long long total = 0;
         std::cout << bot.size() << '\n';
     }
-    std::map<std::string, int> partlenghs25;
-    for (auto [part, expansion] : five) {
-        int length = 0;
+    std::map<std::string, long long> partlenghs24;
+    for (auto [part, expansion] : four) {
+        long long length = 0;
         for (auto p5 : getParts(expansion)) {
-            for (auto p10 : getParts(five[p5])) {
-                for (auto p15 : getParts(five[p10])) {
-                    for (auto p20 : getParts(five[p15])) {
-                        length += p20.size();
+            for (auto p10 : getParts(four[p5])) {
+                for (auto p15 : getParts(four[p10])) {
+                    for (auto p20 : getParts(four[p15])) {
+                        length += four[p20].size();
                     }
                 }
             }
         }
         std::cout << part << '\n';
-        partlenghs25[part] = length;
+        partlenghs24[part] = length;
     }
     for (const auto& code : data) {
         auto bot = stepOneSolve(code);
-        int sum = 0;
+        long long sum = 0;
+        bot = stepTwoSolve(bot);
         for (auto p : getParts(bot)) {
-            if (partlenghs25[p] == 0) {
-                std::cout << p << '\n';
-            }
-            sum += partlenghs25[p];
+            sum += partlenghs24[p];
         }
-        result += sum * std::stoi(code.substr(0, code.size() - 1));
+        result += sum * std::stoll(code.substr(0, code.size() - 1));
     }
     return result;
 }
@@ -188,13 +196,20 @@ std::vector<std::string> getParts(std::string s) {
         return getPartsMemo[s];
     }
     std::vector<std::string> parts;
+    bool success = false;
     while (s.size()) {
+        success = false;
         for (const auto& part : controlerPaths) {
             if (s.starts_with(part)) {
                 parts.push_back(part);
                 s = s.substr(part.size(), s.size());
+                success = true;
                 break;
             }
+        }
+        if (!success) {
+            std::cout << s;
+            throw std::exception();
         }
     }
     getPartsMemo[s] = parts;
